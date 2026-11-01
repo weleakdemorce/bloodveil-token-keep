@@ -5,390 +5,63 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>BLOODVEIL // Token Keep</title>
 <link rel="icon" href="https://i.pinimg.com/736x/be/0e/23/be0e239ef4ba1ea5787b514dc4a74669.jpg">
-<link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;700;900&family=Creepster&family=Share+Tech+Mono&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;700;900&family=Share+Tech+Mono&display=swap" rel="stylesheet">
 <style>
-:root {
-  --blood: #8b0000;
-  --blood-bright: #c41e3a;
-  --blood-glow: #ff0040;
-  --void: #0a0000;
-  --ash: #1a0505;
-  --bone: #e8d5b7;
-  --shadow: #2a0a0a;
-}
-* { margin:0; padding:0; box-sizing:border-box; }
-html, body { height:100%; overflow-x:hidden; }
-body {
-  background: var(--void);
-  color: var(--bone);
-  font-family: 'Share Tech Mono', monospace;
-  min-height:100vh;
-  position:relative;
-}
-#blood-canvas {
-  position:fixed; inset:0; z-index:0; pointer-events:none;
-}
-.fog {
-  position:fixed; inset:0; z-index:1; pointer-events:none;
-  background: radial-gradient(ellipse at 50% 0%, transparent 0%, rgba(10,0,0,0.7) 70%, rgba(0,0,0,0.95) 100%);
-}
-.app {
-  position:relative; z-index:10;
-  min-height:100vh;
-  display:flex; flex-direction:column;
-}
-.header {
-  display:flex; align-items:center; justify-content:space-between;
-  padding:1rem 2rem;
-  background: linear-gradient(180deg, rgba(139,0,0,0.4) 0%, transparent 100%);
-  border-bottom:1px solid var(--blood);
-  box-shadow:0 0 40px rgba(196,30,58,0.3);
-}
-.logo-wrap {
-  display:flex; align-items:center; gap:1rem;
-}
-.logo {
-  width:56px; height:56px; border-radius:50%;
-  border:2px solid var(--blood-bright);
-  box-shadow:0 0 20px var(--blood-glow), inset 0 0 15px rgba(255,0,64,0.4);
-  object-fit:cover;
-  animation: pulse-glow 3s ease-in-out infinite;
-}
-@keyframes pulse-glow {
-  0%,100% { box-shadow:0 0 20px var(--blood-glow), inset 0 0 15px rgba(255,0,64,0.4); }
-  50% { box-shadow:0 0 40px var(--blood-glow), 0 0 60px rgba(255,0,64,0.3), inset 0 0 25px rgba(255,0,64,0.6); }
-}
-.title {
-  font-family:'Cinzel', serif;
-  font-weight:900;
-  font-size:1.8rem;
-  letter-spacing:0.15em;
-  background: linear-gradient(180deg, #fff 0%, var(--blood-bright) 50%, var(--blood) 100%);
-  -webkit-background-clip:text;
-  -webkit-text-fill-color:transparent;
-  text-shadow:0 0 30px rgba(196,30,58,0.5);
-  animation: title-flicker 4s infinite;
-}
-@keyframes title-flicker {
-  0%,95%,100% { opacity:1; }
-  96% { opacity:0.7; }
-  97% { opacity:1; }
-  98% { opacity:0.5; }
-  99% { opacity:1; }
-}
-.status-pill {
-  display:flex; align-items:center; gap:0.5rem;
-  padding:0.4rem 1rem;
-  background:rgba(139,0,0,0.3);
-  border:1px solid var(--blood);
-  border-radius:999px;
-  font-size:0.75rem;
-  letter-spacing:0.1em;
-}
-.pulse-dot {
-  width:8px; height:8px; border-radius:50%;
-  background:var(--blood-bright);
-  box-shadow:0 0 10px var(--blood-glow);
-  animation: pulse-dot 1.5s infinite;
-}
-@keyframes pulse-dot {
-  0%,100% { transform:scale(1); opacity:1; }
-  50% { transform:scale(1.4); opacity:0.6; }
-}
-.gate {
-  flex:1; display:flex; flex-direction:column; align-items:center; justify-content:center;
-  padding:2rem; gap:2rem;
-}
-.gate-card {
-  background: linear-gradient(145deg, rgba(26,5,5,0.95), rgba(10,0,0,0.98));
-  border:1px solid var(--blood);
-  box-shadow:0 0 60px rgba(139,0,0,0.4), inset 0 0 40px rgba(139,0,0,0.1);
-  padding:3rem;
-  max-width:480px; width:100%;
-  text-align:center;
-  position:relative;
-  overflow:hidden;
-}
-.gate-card::before {
-  content:'';
-  position:absolute; top:-50%; left:-50%; width:200%; height:200%;
-  background: conic-gradient(from 0deg, transparent, rgba(196,30,58,0.1), transparent 30%);
-  animation: spin-slow 12s linear infinite;
-}
-@keyframes spin-slow { to { transform:rotate(360deg); } }
-.gate-card > * { position:relative; z-index:1; }
-.gate-icon {
-  width:100px; height:100px; border-radius:50%;
-  border:3px solid var(--blood-bright);
-  box-shadow:0 0 30px var(--blood-glow);
-  margin-bottom:1.5rem;
-  object-fit:cover;
-}
-.gate h1 {
-  font-family:'Cinzel', serif;
-  font-size:1.6rem;
-  letter-spacing:0.2em;
-  color:var(--blood-bright);
-  margin-bottom:0.5rem;
-  text-shadow:0 0 20px rgba(196,30,58,0.6);
-}
-.gate p {
-  font-size:0.85rem;
-  opacity:0.7;
-  margin-bottom:2rem;
-  line-height:1.5;
-}
-.input-group {
-  display:flex; flex-direction:column; gap:0.75rem;
-  margin-bottom:1.5rem;
-}
-input[type="text"], input[type="password"], textarea, select {
-  width:100%;
-  background:rgba(0,0,0,0.6);
-  border:1px solid var(--shadow);
-  color:var(--bone);
-  padding:0.85rem 1rem;
-  font-family:inherit;
-  font-size:0.9rem;
-  outline:none;
-  transition: border-color 0.3s, box-shadow 0.3s;
-}
-input:focus, textarea:focus, select:focus {
-  border-color:var(--blood-bright);
-  box-shadow:0 0 20px rgba(196,30,58,0.3);
-}
-.btn {
-  display:inline-flex; align-items:center; justify-content:center; gap:0.5rem;
-  padding:0.85rem 1.75rem;
-  background: linear-gradient(180deg, var(--blood-bright), var(--blood));
-  border:none;
-  color:#fff;
-  font-family:'Cinzel', serif;
-  font-weight:700;
-  font-size:0.9rem;
-  letter-spacing:0.15em;
-  cursor:pointer;
-  position:relative;
-  overflow:hidden;
-  transition: transform 0.2s, box-shadow 0.3s;
-  text-transform:uppercase;
-}
-.btn::after {
-  content:'';
-  position:absolute; inset:0;
-  background: linear-gradient(90deg, transparent, rgba(255,255,255,0.15), transparent);
-  transform:translateX(-100%);
-  transition:transform 0.5s;
-}
-.btn:hover::after { transform:translateX(100%); }
-.btn:hover {
-  transform:translateY(-2px);
-  box-shadow:0 8px 30px rgba(196,30,58,0.5);
-}
-.btn:active { transform:translateY(0); }
-.btn-ghost {
-  background:transparent;
-  border:1px solid var(--blood);
-  color:var(--blood-bright);
-}
-.btn-ghost:hover {
-  background:rgba(139,0,0,0.2);
-  box-shadow:0 0 20px rgba(196,30,58,0.3);
-}
-.btn-sm { padding:0.5rem 1rem; font-size:0.75rem; }
-.dashboard { display:none; flex:1; }
-.dashboard.active { display:flex; }
-.sidebar {
-  width:240px;
-  background: linear-gradient(180deg, rgba(26,5,5,0.95), rgba(10,0,0,0.98));
-  border-right:1px solid var(--blood);
-  padding:1.5rem 0;
-  display:flex; flex-direction:column;
-}
-.nav-item {
-  display:flex; align-items:center; gap:0.75rem;
-  padding:0.9rem 1.5rem;
-  color:var(--bone);
-  cursor:pointer;
-  font-size:0.85rem;
-  letter-spacing:0.08em;
-  border-left:3px solid transparent;
-  transition: all 0.25s;
-}
-.nav-item:hover, .nav-item.active {
-  background:rgba(139,0,0,0.25);
-  border-left-color:var(--blood-bright);
-  color:#fff;
-  text-shadow:0 0 10px var(--blood-glow);
-}
-.nav-item span.icon { font-size:1.1rem; width:24px; text-align:center; }
-.content {
-  flex:1; padding:2rem;
-  overflow-y:auto;
-}
-.panel {
-  display:none;
-  animation: fadeIn 0.4s ease;
-}
-.panel.active { display:block; }
-@keyframes fadeIn {
-  from { opacity:0; transform:translateY(10px); }
-  to { opacity:1; transform:translateY(0); }
-}
-.panel h2 {
-  font-family:'Cinzel', serif;
-  font-size:1.4rem;
-  letter-spacing:0.15em;
-  color:var(--blood-bright);
-  margin-bottom:0.5rem;
-  text-shadow:0 0 15px rgba(196,30,58,0.4);
-}
-.panel .desc {
-  font-size:0.8rem;
-  opacity:0.6;
-  margin-bottom:1.5rem;
-}
-.card {
-  background:rgba(26,5,5,0.7);
-  border:1px solid var(--shadow);
-  padding:1.5rem;
-  margin-bottom:1.25rem;
-  position:relative;
-}
-.card::before {
-  content:'';
-  position:absolute; top:0; left:0; right:0; height:2px;
-  background: linear-gradient(90deg, transparent, var(--blood-bright), transparent);
-}
-.card h3 {
-  font-family:'Cinzel', serif;
-  font-size:1rem;
-  letter-spacing:0.1em;
-  margin-bottom:1rem;
-  color:var(--bone);
-}
-.row { display:flex; gap:1rem; flex-wrap:wrap; }
-.row > * { flex:1; min-width:180px; }
-label {
-  display:block;
-  font-size:0.7rem;
-  letter-spacing:0.12em;
-  text-transform:uppercase;
-  opacity:0.6;
-  margin-bottom:0.4rem;
-}
-textarea {
-  min-height:100px;
-  resize:vertical;
-}
-.token-display {
-  font-family:'Share Tech Mono', monospace;
-  background:rgba(0,0,0,0.5);
-  padding:0.75rem 1rem;
-  border:1px solid var(--shadow);
-  word-break:break-all;
-  font-size:0.8rem;
-  color:var(--blood-bright);
-}
-.user-card {
-  display:flex; align-items:center; gap:1.25rem;
-  padding:1.25rem;
-  background:rgba(0,0,0,0.4);
-  border:1px solid var(--shadow);
-  margin-bottom:1.5rem;
-}
-.avatar {
-  width:72px; height:72px; border-radius:50%;
-  border:2px solid var(--blood-bright);
-  box-shadow:0 0 20px rgba(196,30,58,0.4);
-  object-fit:cover;
-}
-.user-meta h3 { font-family:'Cinzel', serif; font-size:1.2rem; margin-bottom:0.25rem; }
-.user-meta p { font-size:0.8rem; opacity:0.7; }
-.badge {
-  display:inline-block;
-  padding:0.2rem 0.6rem;
-  background:rgba(139,0,0,0.4);
-  border:1px solid var(--blood);
-  font-size:0.65rem;
-  letter-spacing:0.1em;
-  margin-top:0.4rem;
-}
-.script-list {
-  display:grid; gap:0.75rem;
-}
-.script-item {
-  display:flex; align-items:center; justify-content:space-between;
-  padding:0.9rem 1.1rem;
-  background:rgba(0,0,0,0.4);
-  border:1px solid var(--shadow);
-  transition: border-color 0.25s;
-}
-.script-item:hover { border-color:var(--blood); }
-.script-item .name { font-weight:700; color:var(--blood-bright); }
-.script-item .meta { font-size:0.7rem; opacity:0.5; }
-.key-gate {
-  text-align:center;
-  padding:2rem;
-}
-.toast {
-  position:fixed; bottom:2rem; right:2rem;
-  background:rgba(26,5,5,0.95);
-  border:1px solid var(--blood-bright);
-  padding:1rem 1.5rem;
-  box-shadow:0 0 30px rgba(196,30,58,0.4);
-  z-index:1000;
-  transform:translateY(150%);
-  transition:transform 0.4s cubic-bezier(0.2,0.9,0.3,1);
-  font-size:0.85rem;
-  max-width:320px;
-}
-.toast.show { transform:translateY(0); }
-.audio-bar {
-  position:fixed; bottom:0; left:0; right:0;
-  background:rgba(10,0,0,0.9);
-  border-top:1px solid var(--blood);
-  padding:0.6rem 1.5rem;
-  display:flex; align-items:center; gap:1rem;
-  z-index:50;
-  font-size:0.75rem;
-}
-.audio-bar button {
-  background:none; border:none; color:var(--blood-bright);
-  cursor:pointer; font-size:1.1rem;
-}
-.drop {
-  position:absolute;
-  width:6px; height:10px;
-  background:var(--blood-bright);
-  border-radius:50% 50% 50% 50% / 60% 60% 40% 40%;
-  opacity:0.6;
-  animation: drip 4s linear infinite;
-  pointer-events:none;
-}
-@keyframes drip {
-  0% { transform:translateY(-20px); opacity:0; }
-  10% { opacity:0.7; }
-  90% { opacity:0.5; }
-  100% { transform:translateY(100vh); opacity:0; }
-}
-@media (max-width:768px) {
-  .sidebar { width:100%; flex-direction:row; overflow-x:auto; padding:0.5rem 0; }
-  .nav-item { padding:0.7rem 1rem; white-space:nowrap; border-left:none; border-bottom:3px solid transparent; }
-  .nav-item.active { border-bottom-color:var(--blood-bright); border-left:none; }
-  .dashboard { flex-direction:column; }
-  .header { padding:0.75rem 1rem; }
-  .title { font-size:1.2rem; }
-}
-::-webkit-scrollbar { width:6px; }
-::-webkit-scrollbar-track { background:var(--void); }
-::-webkit-scrollbar-thumb { background:var(--blood); border-radius:3px; }
+:root{--blood:#8b0000;--blood-bright:#c41e3a;--blood-glow:#ff0040;--void:#0a0000;--ash:#1a0505;--bone:#e8d5b7;--shadow:#2a0a0a}
+*{margin:0;padding:0;box-sizing:border-box}html,body{height:100%;overflow-x:hidden}body{background:var(--void);color:var(--bone);font-family:'Share Tech Mono',monospace;min-height:100vh;position:relative}
+#blood-canvas{position:fixed;inset:0;z-index:0;pointer-events:none}.fog{position:fixed;inset:0;z-index:1;pointer-events:none;background:radial-gradient(ellipse at 50% 0%,transparent 0%,rgba(10,0,0,.7) 70%,rgba(0,0,0,.95) 100%)}
+.app{position:relative;z-index:10;min-height:100vh;display:flex;flex-direction:column}
+.header{display:flex;align-items:center;justify-content:space-between;padding:1rem 2rem;background:linear-gradient(180deg,rgba(139,0,0,.4) 0%,transparent 100%);border-bottom:1px solid var(--blood);box-shadow:0 0 40px rgba(196,30,58,.3)}
+.logo-wrap{display:flex;align-items:center;gap:1rem}.logo{width:56px;height:56px;border-radius:50%;border:2px solid var(--blood-bright);box-shadow:0 0 20px var(--blood-glow),inset 0 0 15px rgba(255,0,64,.4);object-fit:cover;animation:pulse-glow 3s ease-in-out infinite}
+@keyframes pulse-glow{0%,100%{box-shadow:0 0 20px var(--blood-glow),inset 0 0 15px rgba(255,0,64,.4)}50%{box-shadow:0 0 40px var(--blood-glow),0 0 60px rgba(255,0,64,.3),inset 0 0 25px rgba(255,0,64,.6)}}
+.title{font-family:Cinzel,serif;font-weight:900;font-size:1.8rem;letter-spacing:.15em;background:linear-gradient(180deg,#fff 0%,var(--blood-bright) 50%,var(--blood) 100%);-webkit-background-clip:text;-webkit-text-fill-color:transparent;text-shadow:0 0 30px rgba(196,30,58,.5);animation:title-flicker 4s infinite}
+@keyframes title-flicker{0%,95%,100%{opacity:1}96%{opacity:.7}97%{opacity:1}98%{opacity:.5}99%{opacity:1}}
+.status-pill{display:flex;align-items:center;gap:.5rem;padding:.4rem 1rem;background:rgba(139,0,0,.3);border:1px solid var(--blood);border-radius:999px;font-size:.75rem;letter-spacing:.1em}
+.pulse-dot{width:8px;height:8px;border-radius:50%;background:var(--blood-bright);box-shadow:0 0 10px var(--blood-glow);animation:pulse-dot 1.5s infinite}
+@keyframes pulse-dot{0%,100%{transform:scale(1);opacity:1}50%{transform:scale(1.4);opacity:.6}}
+.gate{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:2rem;gap:2rem}
+.gate-card{background:linear-gradient(145deg,rgba(26,5,5,.95),rgba(10,0,0,.98));border:1px solid var(--blood);box-shadow:0 0 60px rgba(139,0,0,.4),inset 0 0 40px rgba(139,0,0,.1);padding:3rem;max-width:480px;width:100%;text-align:center;position:relative;overflow:hidden}
+.gate-card::before{content:'';position:absolute;top:-50%;left:-50%;width:200%;height:200%;background:conic-gradient(from 0deg,transparent,rgba(196,30,58,.1),transparent 30%);animation:spin-slow 12s linear infinite}
+@keyframes spin-slow{to{transform:rotate(360deg)}}.gate-card>*{position:relative;z-index:1}
+.gate-icon{width:100px;height:100px;border-radius:50%;border:3px solid var(--blood-bright);box-shadow:0 0 30px var(--blood-glow);margin-bottom:1.5rem;object-fit:cover}
+.gate h1{font-family:Cinzel,serif;font-size:1.6rem;letter-spacing:.2em;color:var(--blood-bright);margin-bottom:.5rem;text-shadow:0 0 20px rgba(196,30,58,.6)}
+.gate p{font-size:.85rem;opacity:.7;margin-bottom:2rem;line-height:1.5}
+.input-group{display:flex;flex-direction:column;gap:.75rem;margin-bottom:1.5rem}
+input[type=text],input[type=password],textarea,select{width:100%;background:rgba(0,0,0,.6);border:1px solid var(--shadow);color:var(--bone);padding:.85rem 1rem;font-family:inherit;font-size:.9rem;outline:none;transition:border-color .3s,box-shadow .3s}
+input:focus,textarea:focus,select:focus{border-color:var(--blood-bright);box-shadow:0 0 20px rgba(196,30,58,.3)}
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:.5rem;padding:.85rem 1.75rem;background:linear-gradient(180deg,var(--blood-bright),var(--blood));border:none;color:#fff;font-family:Cinzel,serif;font-weight:700;font-size:.9rem;letter-spacing:.15em;cursor:pointer;position:relative;overflow:hidden;transition:transform .2s,box-shadow .3s;text-transform:uppercase}
+.btn::after{content:'';position:absolute;inset:0;background:linear-gradient(90deg,transparent,rgba(255,255,255,.15),transparent);transform:translateX(-100%);transition:transform .5s}
+.btn:hover::after{transform:translateX(100%)}.btn:hover{transform:translateY(-2px);box-shadow:0 8px 30px rgba(196,30,58,.5)}.btn:active{transform:translateY(0)}
+.btn-ghost{background:transparent;border:1px solid var(--blood);color:var(--blood-bright)}.btn-ghost:hover{background:rgba(139,0,0,.2);box-shadow:0 0 20px rgba(196,30,58,.3)}
+.btn-sm{padding:.5rem 1rem;font-size:.75rem}.dashboard{display:none;flex:1}.dashboard.active{display:flex}
+.sidebar{width:240px;background:linear-gradient(180deg,rgba(26,5,5,.95),rgba(10,0,0,.98));border-right:1px solid var(--blood);padding:1.5rem 0;display:flex;flex-direction:column}
+.nav-item{display:flex;align-items:center;gap:.75rem;padding:.9rem 1.5rem;color:var(--bone);cursor:pointer;font-size:.85rem;letter-spacing:.08em;border-left:3px solid transparent;transition:all .25s}
+.nav-item:hover,.nav-item.active{background:rgba(139,0,0,.25);border-left-color:var(--blood-bright);color:#fff;text-shadow:0 0 10px var(--blood-glow)}
+.nav-item span.icon{font-size:1.1rem;width:24px;text-align:center}.content{flex:1;padding:2rem;overflow-y:auto}
+.panel{display:none;animation:fadeIn .4s ease}.panel.active{display:block}@keyframes fadeIn{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:translateY(0)}}
+.panel h2{font-family:Cinzel,serif;font-size:1.4rem;letter-spacing:.15em;color:var(--blood-bright);margin-bottom:.5rem;text-shadow:0 0 15px rgba(196,30,58,.4)}
+.panel .desc{font-size:.8rem;opacity:.6;margin-bottom:1.5rem}
+.card{background:rgba(26,5,5,.7);border:1px solid var(--shadow);padding:1.5rem;margin-bottom:1.25rem;position:relative}
+.card::before{content:'';position:absolute;top:0;left:0;right:0;height:2px;background:linear-gradient(90deg,transparent,var(--blood-bright),transparent)}
+.card h3{font-family:Cinzel,serif;font-size:1rem;letter-spacing:.1em;margin-bottom:1rem;color:var(--bone)}
+.row{display:flex;gap:1rem;flex-wrap:wrap}.row>*{flex:1;min-width:180px}
+label{display:block;font-size:.7rem;letter-spacing:.12em;text-transform:uppercase;opacity:.6;margin-bottom:.4rem}
+textarea{min-height:100px;resize:vertical}
+.token-display{font-family:'Share Tech Mono',monospace;background:rgba(0,0,0,.5);padding:.75rem 1rem;border:1px solid var(--shadow);word-break:break-all;font-size:.8rem;color:var(--blood-bright)}
+.user-card{display:flex;align-items:center;gap:1.25rem;padding:1.25rem;background:rgba(0,0,0,.4);border:1px solid var(--shadow);margin-bottom:1.5rem}
+.avatar{width:72px;height:72px;border-radius:50%;border:2px solid var(--blood-bright);box-shadow:0 0 20px rgba(196,30,58,.4);object-fit:cover}
+.user-meta h3{font-family:Cinzel,serif;font-size:1.2rem;margin-bottom:.25rem}.user-meta p{font-size:.8rem;opacity:.7}
+.badge{display:inline-block;padding:.2rem .6rem;background:rgba(139,0,0,.4);border:1px solid var(--blood);font-size:.65rem;letter-spacing:.1em;margin-top:.4rem}
+.script-list{display:grid;gap:.75rem}.script-item{display:flex;align-items:center;justify-content:space-between;padding:.9rem 1.1rem;background:rgba(0,0,0,.4);border:1px solid var(--shadow);transition:border-color .25s}.script-item:hover{border-color:var(--blood)}.script-item .name{font-weight:700;color:var(--blood-bright)}.script-item .meta{font-size:.7rem;opacity:.5}
+.toast{position:fixed;bottom:2rem;right:2rem;background:rgba(26,5,5,.95);border:1px solid var(--blood-bright);padding:1rem 1.5rem;box-shadow:0 0 30px rgba(196,30,58,.4);z-index:1000;transform:translateY(150%);transition:transform .4s cubic-bezier(.2,.9,.3,1);font-size:.85rem;max-width:320px}.toast.show{transform:translateY(0)}
+.audio-bar{position:fixed;bottom:0;left:0;right:0;background:rgba(10,0,0,.9);border-top:1px solid var(--blood);padding:.6rem 1.5rem;display:flex;align-items:center;gap:1rem;z-index:50;font-size:.75rem}.audio-bar button{background:none;border:none;color:var(--blood-bright);cursor:pointer;font-size:1.1rem}
+@media(max-width:768px){.sidebar{width:100%;flex-direction:row;overflow-x:auto;padding:.5rem 0}.nav-item{padding:.7rem 1rem;white-space:nowrap;border-left:none;border-bottom:3px solid transparent}.nav-item.active{border-bottom-color:var(--blood-bright);border-left:none}.dashboard{flex-direction:column}.header{padding:.75rem 1rem}.title{font-size:1.2rem}}
+::-webkit-scrollbar{width:6px}::-webkit-scrollbar-track{background:var(--void)}::-webkit-scrollbar-thumb{background:var(--blood);border-radius:3px}
 </style>
 </head>
 <body>
 <canvas id="blood-canvas"></canvas>
 <div class="fog"></div>
-
 <div class="app">
   <div class="gate" id="gate">
     <div class="gate-card">
@@ -398,26 +71,19 @@ textarea {
       <div class="input-group">
         <input type="password" id="token-input" placeholder="Discord user token..." autocomplete="off" spellcheck="false">
       </div>
-      <button class="btn" id="enter-btn" style="width:100%">
-        <span>⚜</span> ENTER THE KEEP
-      </button>
-      <p style="margin-top:1.5rem;font-size:0.7rem;opacity:0.4;">Selfbot token keep · local only · no server storage</p>
+      <button class="btn" id="enter-btn" style="width:100%"><span>⚜</span> ENTER THE KEEP</button>
+      <p style="margin-top:1.5rem;font-size:.7rem;opacity:.4">Selfbot token keep · local only · no server storage</p>
     </div>
   </div>
-
   <div class="dashboard" id="dashboard">
     <header class="header">
       <div class="logo-wrap">
         <img class="logo" src="https://i.pinimg.com/736x/be/0e/23/be0e239ef4ba1ea5787b514dc4a74669.jpg" alt="icon">
         <div class="title">BLOODVEIL</div>
       </div>
-      <div class="status-pill">
-        <span class="pulse-dot"></span>
-        <span id="status-text">TOKEN ALIVE</span>
-      </div>
+      <div class="status-pill"><span class="pulse-dot"></span><span id="status-text">TOKEN ALIVE</span></div>
     </header>
-
-    <div style="display:flex;flex:1;min-height:0;">
+    <div style="display:flex;flex:1;min-height:0">
       <nav class="sidebar">
         <div class="nav-item active" data-panel="profile"><span class="icon">🩸</span> PROFILE</div>
         <div class="nav-item" data-panel="customize"><span class="icon">🦇</span> CUSTOMIZE</div>
@@ -427,672 +93,148 @@ textarea {
         <div class="nav-item" data-panel="loadstring"><span class="icon">⚡</span> LOADSTRING</div>
         <div class="nav-item" data-panel="settings"><span class="icon">⚰</span> SETTINGS</div>
       </nav>
-
       <main class="content">
         <div class="panel active" id="panel-profile">
           <h2>THE BLOODLINE</h2>
           <p class="desc">Your vessel. Token keeps the heart beating.</p>
           <div class="user-card" id="user-card">
             <img class="avatar" id="user-avatar" src="https://i.pinimg.com/736x/be/0e/23/be0e239ef4ba1ea5787b514dc4a74669.jpg" alt="avatar">
-            <div class="user-meta">
-              <h3 id="user-name">Loading...</h3>
-              <p id="user-tag">@...</p>
-              <span class="badge" id="user-id">ID: —</span>
-            </div>
+            <div class="user-meta"><h3 id="user-name">Loading...</h3><p id="user-tag">@...</p><span class="badge" id="user-id">ID: —</span></div>
           </div>
-          <div class="card">
-            <h3>TOKEN STATUS</h3>
-            <div class="token-display" id="token-preview">••••••••••••••••••••••••••••••••</div>
-            <p style="margin-top:0.75rem;font-size:0.75rem;opacity:0.5;">Token lives in localStorage. Close the tab and the keep sleeps. Site alive = token alive.</p>
-          </div>
+          <div class="card"><h3>TOKEN STATUS</h3><div class="token-display" id="token-preview">••••••••••••••••••••••••••••••••</div>
+            <p style="margin-top:.75rem;font-size:.75rem;opacity:.5">Token lives in localStorage. Close the tab and the keep sleeps. Site alive = token alive.</p></div>
           <div class="row">
-            <div class="card" style="flex:1">
-              <h3>GUILDS</h3>
-              <div id="guild-count" style="font-size:2rem;color:var(--blood-bright);font-family:'Cinzel',serif;">—</div>
-            </div>
-            <div class="card" style="flex:1">
-              <h3>FRIENDS</h3>
-              <div id="friend-count" style="font-size:2rem;color:var(--blood-bright);font-family:'Cinzel',serif;">—</div>
-            </div>
+            <div class="card" style="flex:1"><h3>GUILDS</h3><div id="guild-count" style="font-size:2rem;color:var(--blood-bright);font-family:Cinzel,serif">—</div></div>
+            <div class="card" style="flex:1"><h3>FRIENDS</h3><div id="friend-count" style="font-size:2rem;color:var(--blood-bright);font-family:Cinzel,serif">—</div></div>
           </div>
         </div>
-
         <div class="panel" id="panel-customize">
           <h2>RESHAPE THE VESSEL</h2>
           <p class="desc">Change username, status, bio. Writes straight to Discord.</p>
-          <div class="card">
-            <h3>USERNAME</h3>
-            <div class="row">
-              <div>
-                <label>New Username</label>
-                <input type="text" id="new-username" placeholder="new name">
-              </div>
-              <div style="display:flex;align-items:flex-end;">
-                <button class="btn btn-sm" id="btn-username">APPLY</button>
-              </div>
-            </div>
-          </div>
-          <div class="card">
-            <h3>CUSTOM STATUS</h3>
-            <div class="row">
-              <div>
-                <label>Status Text</label>
-                <input type="text" id="custom-status" placeholder="drinking the night...">
-              </div>
-              <div>
-                <label>Emoji (optional)</label>
-                <input type="text" id="status-emoji" placeholder="🦇" maxlength="4">
-              </div>
-              <div style="display:flex;align-items:flex-end;">
-                <button class="btn btn-sm" id="btn-status">SET STATUS</button>
-              </div>
-            </div>
-          </div>
-          <div class="card">
-            <h3>ABOUT ME / BIO</h3>
-            <label>Bio (max 190)</label>
-            <textarea id="bio-text" placeholder="I walk between the living and the dead..."></textarea>
-            <button class="btn btn-sm" id="btn-bio" style="margin-top:0.75rem;">UPDATE BIO</button>
-          </div>
+          <div class="card"><h3>USERNAME</h3><div class="row"><div><label>New Username</label><input type="text" id="new-username" placeholder="new name"></div>
+            <div style="display:flex;align-items:flex-end"><button class="btn btn-sm" id="btn-username">APPLY</button></div></div></div>
+          <div class="card"><h3>CUSTOM STATUS</h3><div class="row"><div><label>Status Text</label><input type="text" id="custom-status" placeholder="drinking the night..."></div>
+            <div><label>Emoji (optional)</label><input type="text" id="status-emoji" placeholder="🦇" maxlength="4"></div>
+            <div style="display:flex;align-items:flex-end"><button class="btn btn-sm" id="btn-status">SET STATUS</button></div></div></div>
+          <div class="card"><h3>ABOUT ME / BIO</h3><label>Bio (max 190)</label><textarea id="bio-text" placeholder="I walk between the living and the dead..."></textarea>
+            <button class="btn btn-sm" id="btn-bio" style="margin-top:.75rem">UPDATE BIO</button></div>
         </div>
-
         <div class="panel" id="panel-dms">
           <h2>WHISPER INTO THE DARK</h2>
           <p class="desc">Send a direct message. User ID or open DM channel ID.</p>
-          <div class="card">
-            <div class="row">
-              <div>
-                <label>Recipient User ID</label>
-                <input type="text" id="dm-user-id" placeholder="123456789012345678">
-              </div>
-            </div>
-            <label style="margin-top:1rem;">Message</label>
-            <textarea id="dm-content" placeholder="The night has eyes..."></textarea>
-            <button class="btn" id="btn-dm" style="margin-top:1rem;">SEND WHISPER</button>
-          </div>
+          <div class="card"><div class="row"><div><label>Recipient User ID</label><input type="text" id="dm-user-id" placeholder="123456789012345678"></div></div>
+            <label style="margin-top:1rem">Message</label><textarea id="dm-content" placeholder="The night has eyes..."></textarea>
+            <button class="btn" id="btn-dm" style="margin-top:1rem">SEND WHISPER</button></div>
         </div>
-
         <div class="panel" id="panel-clone">
           <h2>RAISE A SHADOW GUILD</h2>
-          <p class="desc">Clone channels & roles structure from a guild you are in. Creates a new server in your account.</p>
-          <div class="card">
-            <div class="row">
-              <div>
-                <label>Source Guild ID</label>
-                <input type="text" id="clone-guild-id" placeholder="guild id to clone">
-              </div>
-              <div>
-                <label>New Server Name</label>
-                <input type="text" id="clone-name" placeholder="Shadow Keep">
-              </div>
-            </div>
-            <button class="btn" id="btn-clone" style="margin-top:1.25rem;">CLONE STRUCTURE</button>
-            <p style="margin-top:1rem;font-size:0.75rem;opacity:0.5;">Creates guild → copies roles → copies channels. Icons and members are not transferred. Rate limits apply.</p>
-          </div>
-          <div class="card" id="clone-log" style="display:none;">
-            <h3>CLONE LOG</h3>
-            <pre id="clone-output" style="font-size:0.75rem;white-space:pre-wrap;max-height:240px;overflow:auto;"></pre>
-          </div>
+          <p class="desc">Clone channels & roles structure from a guild you are in.</p>
+          <div class="card"><div class="row"><div><label>Source Guild ID</label><input type="text" id="clone-guild-id" placeholder="guild id to clone"></div>
+            <div><label>New Server Name</label><input type="text" id="clone-name" placeholder="Shadow Keep"></div></div>
+            <button class="btn" id="btn-clone" style="margin-top:1.25rem">CLONE STRUCTURE</button></div>
+          <div class="card" id="clone-log" style="display:none"><h3>CLONE LOG</h3><pre id="clone-output" style="font-size:.75rem;white-space:pre-wrap;max-height:240px;overflow:auto"></pre></div>
         </div>
-
         <div class="panel" id="panel-scripts">
           <h2>SCRIPT RELIQUARY</h2>
-          <p class="desc">Upload Lua. Site keeps it alive via local API. Outsiders see "get key". Owner unlocks with the master key.</p>
-          <div class="card">
-            <h3>UPLOAD SCRIPT</h3>
-            <div class="row">
-              <div>
-                <label>Script Name</label>
-                <input type="text" id="script-name" placeholder="blood_ritual.lua">
-              </div>
-            </div>
-            <label style="margin-top:0.75rem;">Lua Source</label>
-            <textarea id="script-source" placeholder="-- your lua here\nprint('the veil opens')" style="min-height:140px;"></textarea>
-            <button class="btn" id="btn-upload-script" style="margin-top:1rem;">SEAL INTO RELIQUARY</button>
-          </div>
-          <div class="card">
-            <h3>HOSTED SCRIPTS</h3>
-            <div class="script-list" id="script-list">
-              <p style="opacity:0.4;font-size:0.8rem;">No scripts sealed yet.</p>
-            </div>
-          </div>
-          <div class="card">
-            <h3>FETCH SCRIPT</h3>
-            <p class="desc" style="margin-bottom:1rem;">Public .get shows "get key". Owner enters master key.</p>
-            <div class="row">
-              <div>
-                <label>Script ID</label>
-                <input type="text" id="fetch-id" placeholder="script id">
-              </div>
-              <div>
-                <label>Key (owner only)</label>
-                <input type="password" id="fetch-key" placeholder="enter key...">
-              </div>
-            </div>
-            <button class="btn btn-sm" id="btn-fetch" style="margin-top:1rem;">RETRIEVE</button>
-            <pre id="fetch-result" style="margin-top:1rem;font-size:0.8rem;white-space:pre-wrap;display:none;"></pre>
-          </div>
+          <p class="desc">Upload Lua. Public .get shows get key. Owner key: demorce22</p>
+          <div class="card"><h3>UPLOAD SCRIPT</h3><div class="row"><div><label>Script Name</label><input type="text" id="script-name" placeholder="blood_ritual.lua"></div></div>
+            <label style="margin-top:.75rem">Lua Source</label><textarea id="script-source" placeholder="-- your lua here" style="min-height:140px"></textarea>
+            <button class="btn" id="btn-upload-script" style="margin-top:1rem">SEAL INTO RELIQUARY</button></div>
+          <div class="card"><h3>HOSTED SCRIPTS</h3><div class="script-list" id="script-list"><p style="opacity:.4;font-size:.8rem">No scripts sealed yet.</p></div></div>
+          <div class="card"><h3>FETCH SCRIPT</h3><div class="row"><div><label>Script ID</label><input type="text" id="fetch-id" placeholder="script id"></div>
+            <div><label>Key (owner only)</label><input type="password" id="fetch-key" placeholder="enter key..."></div></div>
+            <button class="btn btn-sm" id="btn-fetch" style="margin-top:1rem">RETRIEVE</button>
+            <pre id="fetch-result" style="margin-top:1rem;font-size:.8rem;white-space:pre-wrap;display:none"></pre></div>
         </div>
-
         <div class="panel" id="panel-loadstring">
           <h2>LOADSTRING FORGE</h2>
-          <p class="desc">Edit script → upload to Pastefy → get loadstring ready for injection.</p>
-          <div class="card">
-            <h3>SCRIPT EDITOR</h3>
-            <textarea id="ls-source" placeholder="-- paste or write your script\nloadstring([[...]])()" style="min-height:200px;"></textarea>
-            <div class="row" style="margin-top:1rem;">
-              <button class="btn btn-sm" id="btn-pastefy">UPLOAD TO PASTEFY</button>
-              <button class="btn btn-sm btn-ghost" id="btn-copy-ls">COPY LOADSTRING</button>
-            </div>
-            <div id="pastefy-result" style="margin-top:1rem;display:none;">
-              <label>Pastefy URL</label>
-              <div class="token-display" id="pastefy-url"></div>
-              <label style="margin-top:0.75rem;">Loadstring</label>
-              <div class="token-display" id="loadstring-out"></div>
-            </div>
-          </div>
+          <p class="desc">Edit → Pastefy → loadstring</p>
+          <div class="card"><h3>SCRIPT EDITOR</h3><textarea id="ls-source" placeholder="-- paste script" style="min-height:200px"></textarea>
+            <div class="row" style="margin-top:1rem"><button class="btn btn-sm" id="btn-pastefy">UPLOAD TO PASTEFY</button>
+              <button class="btn btn-sm btn-ghost" id="btn-copy-ls">COPY LOADSTRING</button></div>
+            <div id="pastefy-result" style="margin-top:1rem;display:none"><label>Pastefy URL</label><div class="token-display" id="pastefy-url"></div>
+              <label style="margin-top:.75rem">Loadstring</label><div class="token-display" id="loadstring-out"></div></div></div>
         </div>
-
         <div class="panel" id="panel-settings">
           <h2>THE COFFIN</h2>
           <p class="desc">Keep settings. Music. Purge.</p>
-          <div class="card">
-            <h3>AUDIO</h3>
-            <p style="font-size:0.8rem;opacity:0.6;margin-bottom:0.75rem;">Montell Fish — Destroy Myself Just For You</p>
-            <button class="btn btn-sm" id="btn-toggle-audio">TOGGLE MUSIC</button>
-          </div>
-          <div class="card">
-            <h3>MASTER KEY</h3>
-            <p style="font-size:0.8rem;opacity:0.6;margin-bottom:0.75rem;">Used to unlock scripts for owner. Default set.</p>
-            <input type="password" id="master-key-display" value="••••••••••" readonly>
-          </div>
-          <div class="card">
-            <h3>PURGE TOKEN</h3>
-            <p style="font-size:0.8rem;opacity:0.6;margin-bottom:0.75rem;">Wipe token from this browser. Keep dies until re-entry.</p>
-            <button class="btn btn-sm btn-ghost" id="btn-logout">LEAVE THE KEEP</button>
-          </div>
+          <div class="card"><h3>AUDIO</h3><p style="font-size:.8rem;opacity:.6;margin-bottom:.75rem">Montell Fish — Destroy Myself Just For You</p>
+            <button class="btn btn-sm" id="btn-toggle-audio">TOGGLE MUSIC</button></div>
+          <div class="card"><h3>MASTER KEY</h3><p style="font-size:.8rem;opacity:.6;margin-bottom:.75rem">Unlock scripts. Default set.</p>
+            <input type="password" id="master-key-display" value="••••••••••" readonly></div>
+          <div class="card"><h3>PURGE TOKEN</h3><p style="font-size:.8rem;opacity:.6;margin-bottom:.75rem">Wipe token from this browser.</p>
+            <button class="btn btn-sm btn-ghost" id="btn-logout">LEAVE THE KEEP</button></div>
         </div>
       </main>
     </div>
   </div>
 </div>
-
 <div class="toast" id="toast"></div>
-
-<div class="audio-bar" id="audio-bar" style="display:none;">
+<div class="audio-bar" id="audio-bar" style="display:none">
   <button id="audio-play-btn">▶</button>
   <span>Destroy Myself Just For You — Montell Fish</span>
-  <span style="margin-left:auto;opacity:0.5;" id="audio-time">0:00</span>
+  <span style="margin-left:auto;opacity:.5" id="audio-time">0:00</span>
 </div>
-
-<audio id="bg-audio" loop preload="auto">
-  <source src="DestroyMyselfJustForYou.mp3" type="audio/mpeg">
-</audio>
-
+<audio id="bg-audio" loop preload="auto"><source src="DestroyMyselfJustForYou.mp3" type="audio/mpeg"></audio>
 <script>
-const MASTER_KEY = 'demorce22';
-const API = 'https://discord.com/api/v9';
-let TOKEN = null;
-let CURRENT_USER = null;
-
-const canvas = document.getElementById('blood-canvas');
-const ctx = canvas.getContext('2d');
-let drops = [];
-function resize() {
-  canvas.width = innerWidth;
-  canvas.height = innerHeight;
-}
-resize();
-addEventListener('resize', resize);
-function spawnDrop() {
-  drops.push({
-    x: Math.random() * canvas.width,
-    y: -20,
-    speed: 2 + Math.random() * 5,
-    len: 8 + Math.random() * 14,
-    opacity: 0.3 + Math.random() * 0.5
-  });
-}
-function drawBlood() {
-  ctx.clearRect(0, 0, canvas.width, canvas.height);
-  if (drops.length < 60) spawnDrop();
-  for (let i = drops.length - 1; i >= 0; i--) {
-    const d = drops[i];
-    ctx.beginPath();
-    ctx.strokeStyle = `rgba(196, 30, 58, ${d.opacity})`;
-    ctx.lineWidth = 1.5;
-    ctx.moveTo(d.x, d.y);
-    ctx.lineTo(d.x, d.y + d.len);
-    ctx.stroke();
-    ctx.beginPath();
-    ctx.fillStyle = `rgba(196, 30, 58, ${d.opacity})`;
-    ctx.ellipse(d.x, d.y + d.len, 2.5, 4, 0, 0, Math.PI * 2);
-    ctx.fill();
-    d.y += d.speed;
-    if (d.y > canvas.height + 20) drops.splice(i, 1);
-  }
-  requestAnimationFrame(drawBlood);
-}
-drawBlood();
-
-function toast(msg, ms = 3200) {
-  const el = document.getElementById('toast');
-  el.textContent = msg;
-  el.classList.add('show');
-  setTimeout(() => el.classList.remove('show'), ms);
-}
-
-async function discord(path, opts = {}) {
-  const res = await fetch(API + path, {
-    ...opts,
-    headers: {
-      'Authorization': TOKEN,
-      'Content-Type': 'application/json',
-      ...(opts.headers || {})
-    }
-  });
-  if (!res.ok) {
-    const err = await res.text().catch(() => res.statusText);
-    throw new Error(`${res.status}: ${err.slice(0, 120)}`);
-  }
-  if (res.status === 204) return null;
-  return res.json();
-}
-
-document.getElementById('enter-btn').onclick = async () => {
-  const t = document.getElementById('token-input').value.trim();
-  if (!t || t.length < 50) {
-    toast('Token is the blood. Give a real one.');
-    return;
-  }
-  TOKEN = t;
-  try {
-    CURRENT_USER = await discord('/users/@me');
-    localStorage.setItem('bloodveil_token', TOKEN);
-    openDashboard();
-    toast(`Welcome, ${CURRENT_USER.username}. The keep recognizes your blood.`);
-  } catch (e) {
-    TOKEN = null;
-    toast('Token rejected by the veil. ' + e.message);
-  }
-};
-
-function openDashboard() {
-  document.getElementById('gate').style.display = 'none';
-  document.getElementById('dashboard').classList.add('active');
-  document.getElementById('audio-bar').style.display = 'flex';
-  renderProfile();
-  const audio = document.getElementById('bg-audio');
-  audio.volume = 0.45;
-  audio.play().catch(() => {});
-}
-
-async function renderProfile() {
-  if (!CURRENT_USER) return;
-  const u = CURRENT_USER;
-  document.getElementById('user-name').textContent = u.global_name || u.username;
-  document.getElementById('user-tag').textContent = `@${u.username}`;
-  document.getElementById('user-id').textContent = `ID: ${u.id}`;
-  if (u.avatar) {
-    document.getElementById('user-avatar').src =
-      `https://cdn.discordapp.com/avatars/${u.id}/${u.avatar}.png?size=128`;
-  }
-  const preview = TOKEN.slice(0, 12) + '••••••••••••' + TOKEN.slice(-8);
-  document.getElementById('token-preview').textContent = preview;
-
-  try {
-    const guilds = await discord('/users/@me/guilds');
-    document.getElementById('guild-count').textContent = guilds.length;
-  } catch { document.getElementById('guild-count').textContent = '?'; }
-
-  try {
-    const rel = await discord('/users/@me/relationships');
-    const friends = rel.filter(r => r.type === 1);
-    document.getElementById('friend-count').textContent = friends.length;
-  } catch { document.getElementById('friend-count').textContent = '?'; }
-}
-
-document.querySelectorAll('.nav-item').forEach(el => {
-  el.onclick = () => {
-    document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
-    document.querySelectorAll('.panel').forEach(p => p.classList.remove('active'));
-    el.classList.add('active');
-    document.getElementById('panel-' + el.dataset.panel).classList.add('active');
-  };
-});
-
-document.getElementById('btn-username').onclick = async () => {
-  const name = document.getElementById('new-username').value.trim();
-  if (!name) return toast('Name required.');
-  try {
-    await discord('/users/@me', {
-      method: 'PATCH',
-      body: JSON.stringify({ username: name })
-    });
-    toast('Username reshaped.');
-    CURRENT_USER = await discord('/users/@me');
-    renderProfile();
-  } catch (e) { toast('Failed: ' + e.message); }
-};
-
-document.getElementById('btn-status').onclick = async () => {
-  const text = document.getElementById('custom-status').value.trim();
-  const emoji = document.getElementById('status-emoji').value.trim();
-  try {
-    await discord('/users/@me/settings', {
-      method: 'PATCH',
-      body: JSON.stringify({
-        custom_status: {
-          text: text || null,
-          emoji_name: emoji || null,
-          expires_at: null
-        }
-      })
-    });
-    toast('Status set. The night knows your name.');
-  } catch (e) { toast('Status failed: ' + e.message); }
-};
-
-document.getElementById('btn-bio').onclick = async () => {
-  const bio = document.getElementById('bio-text').value.slice(0, 190);
-  try {
-    await discord('/users/@me', {
-      method: 'PATCH',
-      body: JSON.stringify({ bio })
-    });
-    toast('Bio rewritten in blood.');
-  } catch (e) { toast('Bio failed: ' + e.message); }
-};
-
-document.getElementById('btn-dm').onclick = async () => {
-  const uid = document.getElementById('dm-user-id').value.trim();
-  const content = document.getElementById('dm-content').value.trim();
-  if (!uid || !content) return toast('Recipient and message required.');
-  try {
-    const ch = await discord('/users/@me/channels', {
-      method: 'POST',
-      body: JSON.stringify({ recipient_id: uid })
-    });
-    await discord(`/channels/${ch.id}/messages`, {
-      method: 'POST',
-      body: JSON.stringify({ content })
-    });
-    toast('Whisper delivered.');
-    document.getElementById('dm-content').value = '';
-  } catch (e) { toast('DM failed: ' + e.message); }
-};
-
-document.getElementById('btn-clone').onclick = async () => {
-  const gid = document.getElementById('clone-guild-id').value.trim();
-  const name = document.getElementById('clone-name').value.trim() || 'Shadow Keep';
-  if (!gid) return toast('Source guild ID required.');
-  const logEl = document.getElementById('clone-output');
-  document.getElementById('clone-log').style.display = 'block';
-  const log = (m) => { logEl.textContent += m + '\n'; logEl.scrollTop = logEl.scrollHeight; };
-  logEl.textContent = '';
-  try {
-    log('[*] Fetching source guild channels & roles...');
-    const channels = await discord(`/guilds/${gid}/channels`);
-    const roles = await discord(`/guilds/${gid}/roles`);
-    log(`[+] ${channels.length} channels, ${roles.length} roles`);
-
-    log('[*] Creating new guild...');
-    const newGuild = await discord('/guilds', {
-      method: 'POST',
-      body: JSON.stringify({ name })
-    });
-    log(`[+] Created guild ${newGuild.id}`);
-
-    const roleMap = {};
-    const sortedRoles = roles.filter(r => r.name !== '@everyone').sort((a, b) => a.position - b.position);
-    for (const r of sortedRoles) {
-      try {
-        const nr = await discord(`/guilds/${newGuild.id}/roles`, {
-          method: 'POST',
-          body: JSON.stringify({
-            name: r.name,
-            permissions: r.permissions,
-            color: r.color,
-            hoist: r.hoist,
-            mentionable: r.mentionable
-          })
-        });
-        roleMap[r.id] = nr.id;
-        log(`  + role ${r.name}`);
-        await sleep(400);
-      } catch (e) { log(`  ! role ${r.name}: ${e.message}`); }
-    }
-
-    const cats = channels.filter(c => c.type === 4).sort((a, b) => a.position - b.position);
-    const catMap = {};
-    for (const c of cats) {
-      try {
-        const nc = await discord(`/guilds/${newGuild.id}/channels`, {
-          method: 'POST',
-          body: JSON.stringify({ name: c.name, type: 4, position: c.position })
-        });
-        catMap[c.id] = nc.id;
-        log(`  + category ${c.name}`);
-        await sleep(400);
-      } catch (e) { log(`  ! category ${c.name}: ${e.message}`); }
-    }
-
-    const texts = channels.filter(c => c.type === 0 || c.type === 2 || c.type === 5 || c.type === 13)
-      .sort((a, b) => a.position - b.position);
-    for (const c of texts) {
-      try {
-        await discord(`/guilds/${newGuild.id}/channels`, {
-          method: 'POST',
-          body: JSON.stringify({
-            name: c.name,
-            type: c.type,
-            parent_id: c.parent_id ? catMap[c.parent_id] : undefined,
-            topic: c.topic || undefined,
-            nsfw: c.nsfw,
-            bitrate: c.bitrate,
-            user_limit: c.user_limit,
-            position: c.position
-          })
-        });
-        log(`  + channel ${c.name}`);
-        await sleep(450);
-      } catch (e) { log(`  ! channel ${c.name}: ${e.message}`); }
-    }
-
-    log('[✓] Clone complete. Open Discord to see the shadow guild.');
-    toast('Shadow guild raised.');
-  } catch (e) {
-    log('[✗] ' + e.message);
-    toast('Clone failed: ' + e.message);
-  }
-};
-
-function sleep(ms) { return new Promise(r => setTimeout(r, ms)); }
-
-function getScripts() {
-  try { return JSON.parse(localStorage.getItem('bloodveil_scripts') || '{}'); }
-  catch { return {}; }
-}
-function saveScripts(s) {
-  localStorage.setItem('bloodveil_scripts', JSON.stringify(s));
-}
-function renderScripts() {
-  const list = document.getElementById('script-list');
-  const scripts = getScripts();
-  const ids = Object.keys(scripts);
-  if (!ids.length) {
-    list.innerHTML = '<p style="opacity:0.4;font-size:0.8rem;">No scripts sealed yet.</p>';
-    return;
-  }
-  list.innerHTML = ids.map(id => {
-    const s = scripts[id];
-    return `<div class="script-item">
-      <div>
-        <div class="name">${esc(s.name)}</div>
-        <div class="meta">id: ${id} · ${new Date(s.ts).toLocaleString()}</div>
-      </div>
-      <div style="display:flex;gap:0.5rem;">
-        <button class="btn btn-sm btn-ghost" onclick="copyScriptUrl('${id}')">URL</button>
-        <button class="btn btn-sm btn-ghost" onclick="deleteScript('${id}')">PURGE</button>
-      </div>
-    </div>`;
-  }).join('');
-}
-function esc(s) {
-  return String(s).replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
-}
-window.copyScriptUrl = (id) => {
-  const url = location.origin + location.pathname + '?get=' + id;
-  navigator.clipboard.writeText(url).then(() => toast('Script URL copied. Public sees "get key".'));
-};
-window.deleteScript = (id) => {
-  const s = getScripts();
-  delete s[id];
-  saveScripts(s);
-  renderScripts();
-  toast('Script purged from the reliquary.');
-};
-
-document.getElementById('btn-upload-script').onclick = () => {
-  const name = document.getElementById('script-name').value.trim() || 'unnamed.lua';
-  const source = document.getElementById('script-source').value;
-  if (!source.trim()) return toast('Script body is empty.');
-  const id = 'bv_' + Math.random().toString(36).slice(2, 10);
-  const scripts = getScripts();
-  scripts[id] = { name, source, ts: Date.now() };
-  saveScripts(scripts);
-  renderScripts();
-  document.getElementById('script-source').value = '';
-  document.getElementById('script-name').value = '';
-  toast(`Sealed as ${id}. Public GET demands key.`);
-};
-
-document.getElementById('btn-fetch').onclick = () => {
-  const id = document.getElementById('fetch-id').value.trim();
-  const key = document.getElementById('fetch-key').value;
-  const out = document.getElementById('fetch-result');
-  const scripts = getScripts();
-  if (!scripts[id]) {
-    out.style.display = 'block';
-    out.textContent = 'Script not found in this keep.';
-    return;
-  }
-  if (key === MASTER_KEY) {
-    out.style.display = 'block';
-    out.textContent = scripts[id].source;
-    toast('Owner key accepted. Source revealed.');
-  } else {
-    out.style.display = 'block';
-    out.textContent = 'get key';
-    toast('Locked. Enter the master key.');
-  }
-};
-
-(function handlePublicGet() {
-  const params = new URLSearchParams(location.search);
-  const gid = params.get('get');
-  if (!gid) return;
-  document.body.innerHTML = `
-    <div style="min-height:100vh;display:flex;align-items:center;justify-content:center;background:#0a0000;color:#e8d5b7;font-family:monospace;">
-      <div style="text-align:center;padding:2rem;border:1px solid #8b0000;max-width:420px;">
-        <img src="https://i.pinimg.com/736x/be/0e/23/be0e239ef4ba1ea5787b514dc4a74669.jpg" style="width:80px;height:80px;border-radius:50%;border:2px solid #c41e3a;margin-bottom:1rem;">
-        <h1 style="font-family:serif;color:#c41e3a;letter-spacing:0.2em;">BLOODVEIL</h1>
-        <p style="opacity:0.6;margin:1rem 0;">Script request: <code>${gid}</code></p>
-        <p id="pub-msg" style="font-size:1.4rem;color:#c41e3a;margin:1.5rem 0;">get key</p>
-        <input type="password" id="pub-key" placeholder="enter key..." style="width:100%;padding:0.7rem;background:#000;border:1px solid #2a0a0a;color:#e8d5b7;margin-bottom:0.75rem;">
-        <button id="pub-btn" style="width:100%;padding:0.7rem;background:#8b0000;border:none;color:#fff;cursor:pointer;font-family:serif;letter-spacing:0.15em;">UNLOCK</button>
-        <pre id="pub-src" style="display:none;text-align:left;margin-top:1rem;font-size:0.75rem;white-space:pre-wrap;max-height:300px;overflow:auto;background:#111;padding:1rem;"></pre>
-      </div>
-    </div>`;
-  document.getElementById('pub-btn').onclick = () => {
-    const key = document.getElementById('pub-key').value;
-    const scripts = JSON.parse(localStorage.getItem('bloodveil_scripts') || '{}');
-    if (key === MASTER_KEY && scripts[gid]) {
-      document.getElementById('pub-msg').textContent = 'key accepted';
-      document.getElementById('pub-src').style.display = 'block';
-      document.getElementById('pub-src').textContent = scripts[gid].source;
-    } else {
-      document.getElementById('pub-msg').textContent = 'get key';
-    }
-  };
-})();
-
-document.getElementById('btn-pastefy').onclick = async () => {
-  const src = document.getElementById('ls-source').value;
-  if (!src.trim()) return toast('Nothing to upload.');
-  try {
-    const res = await fetch('https://pastefy.app/api/v2/paste', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({
-        title: 'bloodveil_' + Date.now(),
-        content: src,
-        encrypted: false,
-        type: 'PASTE'
-      })
-    });
-    if (!res.ok) throw new Error('Pastefy ' + res.status);
-    const data = await res.json();
-    const url = data.paste ? `https://pastefy.app/${data.paste.id}` : (data.url || JSON.stringify(data));
-    const raw = data.paste ? `https://pastefy.app/${data.paste.id}/raw` : url;
-    document.getElementById('pastefy-result').style.display = 'block';
-    document.getElementById('pastefy-url').textContent = url;
-    document.getElementById('loadstring-out').textContent =
-      `loadstring(game:HttpGet("${raw}"))()`;
-    toast('Sealed on Pastefy.');
-  } catch (e) {
-    const b64 = btoa(unescape(encodeURIComponent(src)));
-    document.getElementById('pastefy-result').style.display = 'block';
-    document.getElementById('pastefy-url').textContent = '(pastefy unreachable — local encode)';
-    document.getElementById('loadstring-out').textContent =
-      `loadstring(decodebase64("${b64}"))()`;
-    toast('Pastefy failed, gave local loadstring instead. ' + e.message);
-  }
-};
-
-document.getElementById('btn-copy-ls').onclick = () => {
-  const t = document.getElementById('loadstring-out').textContent;
-  if (!t) return toast('Generate first.');
-  navigator.clipboard.writeText(t).then(() => toast('Loadstring copied.'));
-};
-
-document.getElementById('btn-toggle-audio').onclick = () => {
-  const a = document.getElementById('bg-audio');
-  if (a.paused) { a.play(); toast('Music rising.'); }
-  else { a.pause(); toast('Music silenced.'); }
-};
-document.getElementById('audio-play-btn').onclick = () => {
-  const a = document.getElementById('bg-audio');
-  if (a.paused) { a.play(); document.getElementById('audio-play-btn').textContent = '❚❚'; }
-  else { a.pause(); document.getElementById('audio-play-btn').textContent = '▶'; }
-};
-document.getElementById('bg-audio').addEventListener('timeupdate', () => {
-  const a = document.getElementById('bg-audio');
-  const m = Math.floor(a.currentTime / 60);
-  const s = Math.floor(a.currentTime % 60).toString().padStart(2, '0');
-  document.getElementById('audio-time').textContent = `${m}:${s}`;
-});
-
-document.getElementById('btn-logout').onclick = () => {
-  localStorage.removeItem('bloodveil_token');
-  TOKEN = null;
-  location.reload();
-};
-
-(async function restore() {
-  const saved = localStorage.getItem('bloodveil_token');
-  if (!saved) return;
-  TOKEN = saved;
-  try {
-    CURRENT_USER = await discord('/users/@me');
-    openDashboard();
-  } catch {
-    localStorage.removeItem('bloodveil_token');
-    TOKEN = null;
-  }
-})();
-
-renderScripts();
+const MASTER_KEY='demorce22',API='https://discord.com/api/v9';let TOKEN=null,CURRENT_USER=null;
+const canvas=document.getElementById('blood-canvas'),ctx=canvas.getContext('2d');let drops=[];
+function resize(){canvas.width=innerWidth;canvas.height=innerHeight}resize();addEventListener('resize',resize);
+function spawnDrop(){drops.push({x:Math.random()*canvas.width,y:-20,speed:2+Math.random()*5,len:8+Math.random()*14,opacity:.3+Math.random()*.5})}
+function drawBlood(){ctx.clearRect(0,0,canvas.width,canvas.height);if(drops.length<60)spawnDrop();
+for(let i=drops.length-1;i>=0;i--){const d=drops[i];ctx.beginPath();ctx.strokeStyle=`rgba(196,30,58,${d.opacity})`;ctx.lineWidth=1.5;ctx.moveTo(d.x,d.y);ctx.lineTo(d.x,d.y+d.len);ctx.stroke();
+ctx.beginPath();ctx.fillStyle=`rgba(196,30,58,${d.opacity})`;ctx.ellipse(d.x,d.y+d.len,2.5,4,0,0,Math.PI*2);ctx.fill();d.y+=d.speed;if(d.y>canvas.height+20)drops.splice(i,1)}requestAnimationFrame(drawBlood)}drawBlood();
+function toast(msg,ms=3200){const el=document.getElementById('toast');el.textContent=msg;el.classList.add('show');setTimeout(()=>el.classList.remove('show'),ms)}
+async function discord(path,opts={}){const res=await fetch(API+path,{...opts,headers:{'Authorization':TOKEN,'Content-Type':'application/json',...(opts.headers||{})}});
+if(!res.ok){const err=await res.text().catch(()=>res.statusText);throw new Error(`${res.status}: ${err.slice(0,120)}`)}if(res.status===204)return null;return res.json()}
+document.getElementById('enter-btn').onclick=async()=>{const t=document.getElementById('token-input').value.trim();if(!t||t.length<50){toast('Token is the blood. Give a real one.');return}TOKEN=t;
+try{CURRENT_USER=await discord('/users/@me');localStorage.setItem('bloodveil_token',TOKEN);openDashboard();toast(`Welcome, ${CURRENT_USER.username}. The keep recognizes your blood.`)}catch(e){TOKEN=null;toast('Token rejected by the veil. '+e.message)}};
+function openDashboard(){document.getElementById('gate').style.display='none';document.getElementById('dashboard').classList.add('active');document.getElementById('audio-bar').style.display='flex';renderProfile();const audio=document.getElementById('bg-audio');audio.volume=.45;audio.play().catch(()=>{})}
+async function renderProfile(){if(!CURRENT_USER)return;const u=CURRENT_USER;document.getElementById('user-name').textContent=u.global_name||u.username;document.getElementById('user-tag').textContent=`@${u.username}`;document.getElementById('user-id').textContent=`ID: ${u.id}`;
+if(u.avatar)document.getElementById('user-avatar').src=`https://cdn.discordapp.com/avatars/${u.id}/${u.avatar}.png?size=128`;document.getElementById('token-preview').textContent=TOKEN.slice(0,12)+'••••••••••••'+TOKEN.slice(-8);
+try{const guilds=await discord('/users/@me/guilds');document.getElementById('guild-count').textContent=guilds.length}catch{document.getElementById('guild-count').textContent='?'}
+try{const rel=await discord('/users/@me/relationships');document.getElementById('friend-count').textContent=rel.filter(r=>r.type===1).length}catch{document.getElementById('friend-count').textContent='?'}}
+document.querySelectorAll('.nav-item').forEach(el=>{el.onclick=()=>{document.querySelectorAll('.nav-item').forEach(n=>n.classList.remove('active'));document.querySelectorAll('.panel').forEach(p=>p.classList.remove('active'));el.classList.add('active');document.getElementById('panel-'+el.dataset.panel).classList.add('active')}});
+document.getElementById('btn-username').onclick=async()=>{const name=document.getElementById('new-username').value.trim();if(!name)return toast('Name required.');try{await discord('/users/@me',{method:'PATCH',body:JSON.stringify({username:name})});toast('Username reshaped.');CURRENT_USER=await discord('/users/@me');renderProfile()}catch(e){toast('Failed: '+e.message)}};
+document.getElementById('btn-status').onclick=async()=>{const text=document.getElementById('custom-status').value.trim(),emoji=document.getElementById('status-emoji').value.trim();
+try{await discord('/users/@me/settings',{method:'PATCH',body:JSON.stringify({custom_status:{text:text||null,emoji_name:emoji||null,expires_at:null}})});toast('Status set.')}catch(e){toast('Status failed: '+e.message)}};
+document.getElementById('btn-bio').onclick=async()=>{const bio=document.getElementById('bio-text').value.slice(0,190);try{await discord('/users/@me',{method:'PATCH',body:JSON.stringify({bio})});toast('Bio rewritten in blood.')}catch(e){toast('Bio failed: '+e.message)}};
+document.getElementById('btn-dm').onclick=async()=>{const uid=document.getElementById('dm-user-id').value.trim(),content=document.getElementById('dm-content').value.trim();if(!uid||!content)return toast('Recipient and message required.');
+try{const ch=await discord('/users/@me/channels',{method:'POST',body:JSON.stringify({recipient_id:uid})});await discord(`/channels/${ch.id}/messages`,{method:'POST',body:JSON.stringify({content})});toast('Whisper delivered.');document.getElementById('dm-content').value=''}catch(e){toast('DM failed: '+e.message)}};
+document.getElementById('btn-clone').onclick=async()=>{const gid=document.getElementById('clone-guild-id').value.trim(),name=document.getElementById('clone-name').value.trim()||'Shadow Keep';if(!gid)return toast('Source guild ID required.');
+const logEl=document.getElementById('clone-output');document.getElementById('clone-log').style.display='block';const log=m=>{logEl.textContent+=m+'\n';logEl.scrollTop=logEl.scrollHeight};logEl.textContent='';
+try{log('[*] Fetching...');const channels=await discord(`/guilds/${gid}/channels`),roles=await discord(`/guilds/${gid}/roles`);log(`[+] ${channels.length} channels, ${roles.length} roles`);
+log('[*] Creating guild...');const newGuild=await discord('/guilds',{method:'POST',body:JSON.stringify({name})});log(`[+] Created ${newGuild.id}`);
+const sortedRoles=roles.filter(r=>r.name!=='@everyone').sort((a,b)=>a.position-b.position);
+for(const r of sortedRoles){try{await discord(`/guilds/${newGuild.id}/roles`,{method:'POST',body:JSON.stringify({name:r.name,permissions:r.permissions,color:r.color,hoist:r.hoist,mentionable:r.mentionable})});log('  + role '+r.name);await new Promise(r=>setTimeout(r,400))}catch(e){log('  ! '+r.name+': '+e.message)}}
+const cats=channels.filter(c=>c.type===4).sort((a,b)=>a.position-b.position),catMap={};
+for(const c of cats){try{const nc=await discord(`/guilds/${newGuild.id}/channels`,{method:'POST',body:JSON.stringify({name:c.name,type:4,position:c.position})});catMap[c.id]=nc.id;log('  + category '+c.name);await new Promise(r=>setTimeout(r,400))}catch(e){log('  ! '+c.name+': '+e.message)}}
+const texts=channels.filter(c=>[0,2,5,13].includes(c.type)).sort((a,b)=>a.position-b.position);
+for(const c of texts){try{await discord(`/guilds/${newGuild.id}/channels`,{method:'POST',body:JSON.stringify({name:c.name,type:c.type,parent_id:c.parent_id?catMap[c.parent_id]:undefined,topic:c.topic||undefined,nsfw:c.nsfw,bitrate:c.bitrate,user_limit:c.user_limit,position:c.position})});log('  + channel '+c.name);await new Promise(r=>setTimeout(r,450))}catch(e){log('  ! '+c.name+': '+e.message)}}
+log('[✓] Clone complete.');toast('Shadow guild raised.')}catch(e){log('[✗] '+e.message);toast('Clone failed: '+e.message)}};
+function getScripts(){try{return JSON.parse(localStorage.getItem('bloodveil_scripts')||'{}')}catch{return{}}}function saveScripts(s){localStorage.setItem('bloodveil_scripts',JSON.stringify(s))}
+function esc(s){return String(s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]))}
+function renderScripts(){const list=document.getElementById('script-list'),scripts=getScripts(),ids=Object.keys(scripts);
+if(!ids.length){list.innerHTML='<p style="opacity:.4;font-size:.8rem">No scripts sealed yet.</p>';return}
+list.innerHTML=ids.map(id=>{const s=scripts[id];return`<div class="script-item"><div><div class="name">${esc(s.name)}</div><div class="meta">id: ${id} · ${new Date(s.ts).toLocaleString()}</div></div><div style="display:flex;gap:.5rem"><button class="btn btn-sm btn-ghost" onclick="copyScriptUrl('${id}')">URL</button><button class="btn btn-sm btn-ghost" onclick="deleteScript('${id}')">PURGE</button></div></div>`}).join('')}
+window.copyScriptUrl=id=>{navigator.clipboard.writeText(location.origin+location.pathname+'?get='+id).then(()=>toast('Script URL copied.'))};
+window.deleteScript=id=>{const s=getScripts();delete s[id];saveScripts(s);renderScripts();toast('Purged.')};
+document.getElementById('btn-upload-script').onclick=()=>{const name=document.getElementById('script-name').value.trim()||'unnamed.lua',source=document.getElementById('script-source').value;if(!source.trim())return toast('Empty.');const id='bv_'+Math.random().toString(36).slice(2,10);const scripts=getScripts();scripts[id]={name,source,ts:Date.now()};saveScripts(scripts);renderScripts();document.getElementById('script-source').value='';document.getElementById('script-name').value='';toast('Sealed as '+id)};
+document.getElementById('btn-fetch').onclick=()=>{const id=document.getElementById('fetch-id').value.trim(),key=document.getElementById('fetch-key').value,out=document.getElementById('fetch-result'),scripts=getScripts();
+if(!scripts[id]){out.style.display='block';out.textContent='Script not found.';return}if(key===MASTER_KEY){out.style.display='block';out.textContent=scripts[id].source;toast('Key accepted.')}else{out.style.display='block';out.textContent='get key';toast('Locked.')}};
+(function(){const params=new URLSearchParams(location.search),gid=params.get('get');if(!gid)return;
+document.body.innerHTML=`<div style="min-height:100vh;display:flex;align-items:center;justify-content:center;background:#0a0000;color:#e8d5b7;font-family:monospace"><div style="text-align:center;padding:2rem;border:1px solid #8b0000;max-width:420px"><img src="https://i.pinimg.com/736x/be/0e/23/be0e239ef4ba1ea5787b514dc4a74669.jpg" style="width:80px;height:80px;border-radius:50%;border:2px solid #c41e3a;margin-bottom:1rem"><h1 style="font-family:serif;color:#c41e3a;letter-spacing:.2em">BLOODVEIL</h1><p style="opacity:.6;margin:1rem 0">Script: <code>${gid}</code></p><p id="pub-msg" style="font-size:1.4rem;color:#c41e3a;margin:1.5rem 0">get key</p><input type="password" id="pub-key" placeholder="enter key..." style="width:100%;padding:.7rem;background:#000;border:1px solid #2a0a0a;color:#e8d5b7;margin-bottom:.75rem"><button id="pub-btn" style="width:100%;padding:.7rem;background:#8b0000;border:none;color:#fff;cursor:pointer;font-family:serif;letter-spacing:.15em">UNLOCK</button><pre id="pub-src" style="display:none;text-align:left;margin-top:1rem;font-size:.75rem;white-space:pre-wrap;max-height:300px;overflow:auto;background:#111;padding:1rem"></pre></div></div>`;
+document.getElementById('pub-btn').onclick=()=>{const key=document.getElementById('pub-key').value,scripts=JSON.parse(localStorage.getItem('bloodveil_scripts')||'{}');
+if(key===MASTER_KEY&&scripts[gid]){document.getElementById('pub-msg').textContent='key accepted';document.getElementById('pub-src').style.display='block';document.getElementById('pub-src').textContent=scripts[gid].source}else document.getElementById('pub-msg').textContent='get key'}})();
+document.getElementById('btn-pastefy').onclick=async()=>{const src=document.getElementById('ls-source').value;if(!src.trim())return toast('Nothing to upload.');
+try{const res=await fetch('https://pastefy.app/api/v2/paste',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({title:'bloodveil_'+Date.now(),content:src,encrypted:false,type:'PASTE'})});if(!res.ok)throw new Error('Pastefy '+res.status);const data=await res.json();const url=data.paste?`https://pastefy.app/${data.paste.id}`:(data.url||JSON.stringify(data));const raw=data.paste?`https://pastefy.app/${data.paste.id}/raw`:url;
+document.getElementById('pastefy-result').style.display='block';document.getElementById('pastefy-url').textContent=url;document.getElementById('loadstring-out').textContent=`loadstring(game:HttpGet("${raw}"))()`;toast('Sealed on Pastefy.')}catch(e){const b64=btoa(unescape(encodeURIComponent(src)));document.getElementById('pastefy-result').style.display='block';document.getElementById('pastefy-url').textContent='(local encode)';document.getElementById('loadstring-out').textContent=`loadstring(decodebase64("${b64}"))()`;toast('Pastefy failed: '+e.message)}};
+document.getElementById('btn-copy-ls').onclick=()=>{const t=document.getElementById('loadstring-out').textContent;if(!t)return toast('Generate first.');navigator.clipboard.writeText(t).then(()=>toast('Copied.'))};
+document.getElementById('btn-toggle-audio').onclick=()=>{const a=document.getElementById('bg-audio');if(a.paused){a.play();toast('Music rising.')}else{a.pause();toast('Music silenced.')}};
+document.getElementById('audio-play-btn').onclick=()=>{const a=document.getElementById('bg-audio');if(a.paused){a.play();document.getElementById('audio-play-btn').textContent='❚❚'}else{a.pause();document.getElementById('audio-play-btn').textContent='▶'}};
+document.getElementById('bg-audio').addEventListener('timeupdate',()=>{const a=document.getElementById('bg-audio');document.getElementById('audio-time').textContent=`${Math.floor(a.currentTime/60)}:${Math.floor(a.currentTime%60).toString().padStart(2,'0')}`});
+document.getElementById('btn-logout').onclick=()=>{localStorage.removeItem('bloodveil_token');TOKEN=null;location.reload()};
+(async function(){const saved=localStorage.getItem('bloodveil_token');if(!saved)return;TOKEN=saved;try{CURRENT_USER=await discord('/users/@me');openDashboard()}catch{localStorage.removeItem('bloodveil_token');TOKEN=null}})();renderScripts();
 </script>
 </body>
 </html>
